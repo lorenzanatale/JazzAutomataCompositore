@@ -1,3 +1,5 @@
+
+
 from music21 import *
 import numpy as np
 import random
@@ -42,7 +44,7 @@ class JazzAutomataCompositore:
         grid = np.zeros(self.width, dtype=int)
         grid[random.randint(0, self.width-1)] = 1
         
-        # Aggiungi altri musicisti con ruoli diversi
+        # Aggiungi altri musicisti 
         for i in range(self.width):
             if grid[i] == 0 and random.random() < 0.4:
                 grid[i] = random.randint(1, self.num_states-1)
@@ -50,30 +52,32 @@ class JazzAutomataCompositore:
     
     def _risposta_jazz(self, stato_corrente, stati_vicini, chord_type):
         """Determina come un musicista risponde basandosi sui vicini e l'armonia"""
+        
         # Conta quanti vicini stanno suonando
         vicini_attivi = sum(1 for s in stati_vicini if s > 0)
         
         # Se nessuno sta suonando nelle vicinanze
         if vicini_attivi == 0:
-            # 30% di probabilità di iniziare una nuova frase
             return random.randint(1, 3) if random.random() < 0.3 else 0
             
         # Se il musicista sta già suonando
         if stato_corrente > 0:
-            # Possibilità di sviluppare una frase melodica
             if 5 in stati_vicini:
-                return 5  # Continua la risposta melodica
+                return 5  
             elif random.random() < 0.4:
-                return 4  # Passa a una nota di tensione
+                #la probabilità di passare a una tensione riflette l'idea queste sono frequenti nel jazz.
+                return 4  
             else:
-                return random.randint(1, 3)  # Torna a note dell'accordo
+              #questa invece è per aumentare la possibilità che il musicista resti dentro l'armonia
+                return random.randint(1, 3)  
                 
-        # Se ci sono molti musicisti attivi, maggiore probabilità di pause
+        # Se ci sono molti musicisti attivi, maggiore probabilità di pause, per rendere più dinamica la melodia
         if vicini_attivi > 2 and random.random() < 0.6:
             return 0
             
         # Rispondi alle frasi melodiche dei vicini
         if 4 in stati_vicini or 5 in stati_vicini:
+            # Se ci sono tensioni o melodie nei vicini, aumentà la possibilità 
             return 5 if random.random() < 0.7 else 4
             
         return random.randint(1, 3)
@@ -161,4 +165,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
